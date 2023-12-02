@@ -1,6 +1,6 @@
 ---
 
-🔋🔍 **NLP4SIB**: Extracting a Database of Challenges and Mitigation Strategies for Sodium-ion Battery Development 
+###🔋🔍 **NLP4SIB**: Extracting a Database of Challenges and Mitigation Strategies for Sodium-ion Battery Development 
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
