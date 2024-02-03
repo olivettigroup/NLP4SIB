@@ -17,13 +17,13 @@
 For inquiries or further information, please contact: *mrigi@mit.edu*
 
 ### 🙌 Acknowledgements
-Special thanks to Vineeth Venugopal, Elsa Olivetti, Kevin J. Huang, Ryan Stephens and MIT for their support.
+Special thanks to Vineeth Venugopal, Elsa Olivetti, Kevin J. Huang, Ryan Stephens, and MIT for their support.
 
 ---
 
+#### Start DYGGIE++
 
-start the dygie
-    
+```bash
 allennlp train "phrase_classifier/best_parameter_study_improvement.json" \
     --serialization-dir "phrase_classifier/dygiepp/models/improvement" \
     --include-package dygie
@@ -31,5 +31,3 @@ allennlp train "phrase_classifier/best_parameter_study_improvement.json" \
 allennlp train "phrase_classifier/best_parameter_study_challenge.json" \
     --serialization-dir "phrase_classifier/dygiepp/models/challenge" \
     --include-package dygie 
-
-    
