@@ -1,0 +1,3 @@
+[submodule "classifiers/phrase_classifier/dygiepp"]
+	path = classifiers/phrase_classifier/dygiepp
+	url = https://github.com/dwadden/dygiepp
