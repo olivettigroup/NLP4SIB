@@ -1,0 +1,124 @@
+{
+    "data_loader": {
+        "sampler": {
+            "type": "random"
+        }
+    },
+    "dataset_reader": {
+        "max_span_width": 12,
+        "token_indexers": {
+            "bert": {
+                "max_length": 512,
+                "model_name": "m3rg-iitd/matscibert",
+                "type": "pretrained_transformer_mismatched"
+            }
+        },
+        "type": "dygie"
+    },
+    "model": {
+        "embedder": {
+            "token_embedders": {
+                "bert": {
+                    "max_length": 512,
+                    "model_name": "m3rg-iitd/matscibert",
+                    "type": "pretrained_transformer_mismatched"
+                }
+            }
+        },
+        "feature_size": 20,
+        "feedforward_params": {
+            "dropout": 0.3596703891706179,
+            "hidden_dims": 211,
+            "num_layers": 1
+        },
+        "initializer": {
+            "regexes": [
+                [
+                    "_span_width_embedding.weight",
+                    {
+                        "type": "xavier_normal"
+                    }
+                ]
+            ]
+        },
+        "loss_weights": {
+            "coref": 0,
+            "events": 0,
+            "ner": 0.3324750842902306,
+            "relation": 0.31150413186466
+        },
+        "max_span_width": 12,
+        "module_initializer": {
+            "regexes": [
+                [
+                    ".*weight",
+                    {
+                        "type": "xavier_normal"
+                    }
+                ],
+                [
+                    ".*weight_matrix",
+                    {
+                        "type": "xavier_normal"
+                    }
+                ]
+            ]
+        },
+        "modules": {
+            "coref": {
+                "coref_prop": 0,
+                "max_antecedents": 100,
+                "spans_per_word": 0.3
+            },
+            "events": {
+                "argument_spans_per_word": 0.8,
+                "loss_weights": {
+                    "arguments": 1,
+                    "trigger": 0.2
+                },
+                "trigger_spans_per_word": 0.3
+            },
+            "ner": {},
+            "relation": {
+                "spans_per_word": 0.36404858950176894
+            }
+        },
+        "target_task": "relation",
+        "type": "dygie"
+    },
+    "numpy_seed": 1337,
+    "pytorch_seed": 133,
+    "random_seed": 13370,
+    "test_data_path": "phrase_classifier/data/challenge_ner/test.json",
+    "train_data_path": "phrase_classifier/data/challenge_ner/train.json",
+    "trainer": {
+        "checkpointer": {
+            "num_serialized_models_to_keep": 3
+        },
+        "cuda_device": 0,
+        "grad_norm": 5,
+        "learning_rate_scheduler": {
+            "type": "slanted_triangular"
+        },
+        "num_epochs": 35,
+        "optimizer": {
+            "lr": 0.0007,
+            "parameter_groups": [
+                [
+                    [
+                        "_embedder"
+                    ],
+                    {
+                        "finetune": true,
+                        "lr": 5e-05,
+                        "weight_decay": 0.01
+                    }
+                ]
+            ],
+            "type": "adamw",
+            "weight_decay": 0
+        },
+        "validation_metric": "+MEAN__relation_f1"
+    },
+    "validation_data_path": "phrase_classifier/data/challenge_ner/dev.json"
+}

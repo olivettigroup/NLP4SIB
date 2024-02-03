@@ -20,3 +20,16 @@ For inquiries or further information, please contact: *mrigi@mit.edu*
 Special thanks to Vineeth Venugopal, Elsa Olivetti, Kevin J. Huang, Ryan Stephens and MIT for their support.
 
 ---
+
+
+start the dygie
+    
+allennlp train "phrase_classifier/best_parameter_study_improvement.json" \
+    --serialization-dir "phrase_classifier/dygiepp/models/improvement" \
+    --include-package dygie
+
+allennlp train "phrase_classifier/best_parameter_study_challenge.json" \
+    --serialization-dir "phrase_classifier/dygiepp/models/challenge" \
+    --include-package dygie 
+
+    
