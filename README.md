@@ -40,12 +40,18 @@ Special thanks to Vineeth Venugopal, Elsa Olivetti, Kevin J. Huang, Ryan Stephen
 
 #### 🔍 Run Entity & Relation Extraction with DYGGIE++
 
-```bash
-allennlp train "phrase_classifier/best_parameter_study_improvement.json" \
-    --serialization-dir "phrase_classifier/dygiepp/models/improvement" \
-    --include-package dygie
-
-allennlp train "phrase_classifier/best_parameter_study_challenge.json" \
-    --serialization-dir "phrase_classifier/dygiepp/models/challenge" \
-    --include-package dygie 
+1. **Initialize DyGIE++**:
+   ```bash
+    git submodule init
+    git submodule update
+   ```
+2. **Train DyGIE++** using the labeled sentences:
+    ```bash
+    allennlp train "phrase_classifier/best_parameter_study_improvement.json" \
+        --serialization-dir "phrase_classifier/dygiepp/models/improvement" \
+        --include-package dygie
+    
+    allennlp train "phrase_classifier/best_parameter_study_challenge.json" \
+        --serialization-dir "phrase_classifier/dygiepp/models/challenge" \
+        --include-package dygie 
 
