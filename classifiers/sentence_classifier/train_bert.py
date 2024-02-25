@@ -24,7 +24,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 root_dir = os.getcwd()
 
-DATASET_NAME = f"{root_dir}/classifiers/sentence_classifier/datasets/challenge_dataset.csv"
+DATASET_NAME = f"{root_dir}/classifiers/sentence_classifier/datasets/mitigation_dataset.csv"
 MODEL_NAME = "m3rg-iitd/matscibert"
 STUDY_NAME = f"challenge_dataset"
 
@@ -109,7 +109,7 @@ def load_datasets(tokenizer, is_final_run=False):
 
 def training_loop(train_dataloader, eval_dataloader, model, optimizer,
                   num_training_steps, num_epochs, lr_scheduler, device,
-                  save, study_name, tokenizer):
+                  is_final_run, study_name, tokenizer):
     model.train()
     eval_metrics = train_metrics = {'f1': load_metric('f1'),
                                     'precision': load_metric('precision'),
@@ -140,7 +140,7 @@ def training_loop(train_dataloader, eval_dataloader, model, optimizer,
     progress_bar.close()
     test_score = evaluate_model(eval_metrics, eval_dataloader, model, device)
 
-    if save:
+    if is_final_run:
         save_model_and_tokenizer(model, tokenizer, study_name, test_score)
         return test_score
     print(f'\033[1;32mThis run has ended with a '
@@ -165,13 +165,14 @@ def save_model_and_tokenizer(model, tokenizer, study_name, score):
     """Save the model and tokenizer to the models folder."""
     model.save_pretrained(f"models/{study_name}")
     tokenizer.save_pretrained(f"models/{study_name}")
-    print(score)
+    print(f"The test F1 score is: {round(score, 3)}")
     """for key, values in score.items():
         print(f'{key.capitalize()} - Mean: {np.mean(values):.4f}, Std: {np.std(values):.4f}')"""
+    
     print(f'Model and tokenizer saved to models/{study_name}')
 
 
-def objective(trial, tokenizer, device, model_name, save=False):
+def objective(trial, tokenizer, device, model_name, is_final_run=False):
     """Objective function for Optuna."""
     # Define hyperparameter space using trial object
     num_epochs = trial.suggest_int('epochs', 1, 5)
@@ -180,7 +181,7 @@ def objective(trial, tokenizer, device, model_name, save=False):
     learning_rate = trial.suggest_float('learning_rate', 5e-6, 1e-4)
 
     # Load the data once if it doesn't depend on trial parameters
-    tokenized_train_datasets, tokenized_dev_datasets, y_train = load_datasets(tokenizer)
+    tokenized_train_datasets, tokenized_dev_datasets, y_train = load_datasets(tokenizer, is_final_run=is_final_run)
     sampler = get_weighted_random_sampler(y_train)
     eval_dataloader = DataLoader(tokenized_dev_datasets, batch_size=8)
 
@@ -201,7 +202,7 @@ def objective(trial, tokenizer, device, model_name, save=False):
         # Run the training loop
         score = training_loop(train_dataloader, eval_dataloader, model,\
                               optimizer, num_training_steps, num_epochs,\
-                                lr_scheduler, device, save, STUDY_NAME, tokenizer)
+                                lr_scheduler, device, is_final_run, STUDY_NAME, tokenizer)
         f1_scores.append(score)
         torch.cuda.empty_cache()  # Only if using GPU
 
@@ -231,7 +232,7 @@ def main():
     best_trial = study.best_trial
     print(f"f1: {best_trial.value}")
     print(f"Best hyperparameters: {best_trial.params}")
-    print(f'The final score is: {objective(best_trial, tokenizer, DEVICE, MODEL_NAME, save=True)}')
+    print(f'The final score is: {objective(best_trial, tokenizer, DEVICE, MODEL_NAME, is_final_run=True)}')
 
 
 if __name__ == "__main__":
