@@ -38,7 +38,7 @@ Special thanks to Vineeth Venugopal, Elsa Olivetti, Kevin J. Huang, Ryan Stephen
    python classifiers/sentence_classifier/train_bert.py 
    ```
 
-#### 🔍 Run Entity & Relation Extraction with DYGGIE++
+#### 🔍 Run Entity & Relation Extraction with DYGIE++
 
 1. **Initialize DyGIE++**:
    ```bash

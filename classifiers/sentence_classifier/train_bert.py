@@ -17,15 +17,16 @@ from transformers import (
 )
 from datasets import load_metric, Dataset
 import os
+
 logging.getLogger("transformers").setLevel(logging.ERROR)
+# Disable parallelism to avoid deadlocks in DataLoader
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 root_dir = os.getcwd()
-parent_dir = os.path.dirname(root_dir)
 
-DATASET_NAME = f"{parent_dir}/datasets/challenge_dataset.csv"
+DATASET_NAME = f"{root_dir}/classifiers/sentence_classifier/datasets/challenge_dataset.csv"
 MODEL_NAME = "m3rg-iitd/matscibert"
-STUDY_NAME = f"{DATASET_NAME.rsplit('/', maxsplit=1)[-1].split('.')[0]}\
-    _{MODEL_NAME.rsplit('/', maxsplit=1)[-1]}_v2"
+STUDY_NAME = f"challenge_dataset"
 
 DEVICE = torch.device("cuda") if torch.cuda.is_available()\
       else torch.device("cpu")
@@ -74,7 +75,7 @@ def load_datasets(tokenizer, is_final_run=False):
         [['text', 'label']]
     df_dev = labeled_data[dev_condition][['text', 'label']]
 
-    print('Number of total datapoints (train/dev/test..):', len(labeled_data))
+    print('Number of total datapoints (train/dev/test):', len(labeled_data))
     print('Number of train datapoints:', len(df_train))
     print('Number of dev/test datapoints:', len(df_dev))
 
@@ -140,7 +141,7 @@ def training_loop(train_dataloader, eval_dataloader, model, optimizer,
     test_score = evaluate_model(eval_metrics, eval_dataloader, model, device)
 
     if save:
-        save_model_and_tokenizer(model, tokenizer, study_name)
+        save_model_and_tokenizer(model, tokenizer, study_name, test_score)
         return test_score
     print(f'\033[1;32mThis run has ended with a '
       f'development F1-score of: {test_score:.4f}\033[0m')
@@ -164,12 +165,13 @@ def save_model_and_tokenizer(model, tokenizer, study_name, score):
     """Save the model and tokenizer to the models folder."""
     model.save_pretrained(f"models/{study_name}")
     tokenizer.save_pretrained(f"models/{study_name}")
-    for key, values in score.items():
-        print(f'{key.capitalize()} - Mean: {np.mean(values):.4f}, Std: {np.std(values):.4f}')
+    print(score)
+    """for key, values in score.items():
+        print(f'{key.capitalize()} - Mean: {np.mean(values):.4f}, Std: {np.std(values):.4f}')"""
     print(f'Model and tokenizer saved to models/{study_name}')
 
 
-def objective(trial, tokenizer, device, model_name):
+def objective(trial, tokenizer, device, model_name, save=False):
     """Objective function for Optuna."""
     # Define hyperparameter space using trial object
     num_epochs = trial.suggest_int('epochs', 1, 5)
@@ -199,7 +201,7 @@ def objective(trial, tokenizer, device, model_name):
         # Run the training loop
         score = training_loop(train_dataloader, eval_dataloader, model,\
                               optimizer, num_training_steps, num_epochs,\
-                                lr_scheduler, device, False, None, tokenizer)
+                                lr_scheduler, device, save, STUDY_NAME, tokenizer)
         f1_scores.append(score)
         torch.cuda.empty_cache()  # Only if using GPU
 
@@ -217,18 +219,19 @@ def main():
     study = optuna.create_study(direction='maximize', sampler=optuna.samplers.TPESampler(),
                                 load_if_exists=True, study_name=STUDY_NAME, \
                                     storage="sqlite:///bert.db")
-    study.optimize(lambda trial: objective(trial, tokenizer, DEVICE, MODEL_NAME), n_trials=N_TRIALS)
-
+    #study.optimize(lambda trial: objective(trial, tokenizer, DEVICE, MODEL_NAME), n_trials=N_TRIALS)
+    
+    study = optuna.load_study(study_name=STUDY_NAME, 
+                                storage="sqlite:///bert.db")
+    print(f"Completed trials: {len([trial for trial in study.get_trials() if trial.state == optuna.trial.TrialState.COMPLETE])}")
     # Final run with best parameters
-    save = True # global save flag
-    study = optuna.load_study(storage="sqlite:///bert.db", study_name=STUDY_NAME)
     print(f"The study has {len(study.get_trials())} trials!")
     print("Performing the final RUN!")
 
     best_trial = study.best_trial
     print(f"f1: {best_trial.value}")
     print(f"Best hyperparameters: {best_trial.params}")
-    print(f'The final score is: {objective(best_trial, tokenizer, DEVICE, MODEL_NAME)}')
+    print(f'The final score is: {objective(best_trial, tokenizer, DEVICE, MODEL_NAME, save=True)}')
 
 
 if __name__ == "__main__":
