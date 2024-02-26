@@ -20,8 +20,7 @@ import optuna
 
 # Use absolute paths and os.path.join for OS-independent file paths
 root_dir = os.getcwd()
-parent_dir = os.path.dirname(root_dir)
-dataset_path = os.path.join(parent_dir, 'datasets', 'challenge_dataset.csv')
+dataset_path = os.path.join(root_dir, 'classifiers/sentence_classifier/datasets', 'challenge_dataset.csv')
 
 # Read dataset
 df = pd.read_csv(dataset_path)
@@ -148,6 +147,7 @@ def objective(trial):
         predicted_test = text_clf.predict(X_test)
         print(f'Test Precision: {compute_precision(predicted_test, y_test)}')
         print(f'Test Recall: {compute_recall(predicted_test, y_test)}')
+        print(f'Test F1 Score: {compute_f1(predicted_test, y_test)}')
         plot_confusion_matrix('TF-IDF Confusion Matrix',
                               predicted_test, y_test, ['Both', 'Intro', 'Macro', 'Micro', 'None'])
 
@@ -165,17 +165,4 @@ study.optimize(objective, n_trials=500)
 # Load existing studies after completion
 TEST = True
 study = optuna.load_study(study_name=STUDY_NAME, storage=DB_PATH)
-objective(study.best_trial)
-
-test = False
-study_name = '100p_svm_x1'
-db_path = "sqlite:///tf-idf.db"
-
-study = optuna.create_study(direction='maximize', sampler=optuna.samplers.TPESampler(),
-                           load_if_exists=True, study_name=study_name, storage=db_path)
-study.optimize(objective, n_trials=500)
-
-# Load existing studies after completion
-test = True
-study = optuna.load_study(study_name=study_name, storage=db_path)
 objective(study.best_trial)
