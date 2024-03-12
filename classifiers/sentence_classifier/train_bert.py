@@ -220,7 +220,7 @@ def main():
     study = optuna.create_study(direction='maximize', sampler=optuna.samplers.TPESampler(),
                                 load_if_exists=True, study_name=STUDY_NAME, \
                                     storage="sqlite:///bert.db")
-    #study.optimize(lambda trial: objective(trial, tokenizer, DEVICE, MODEL_NAME), n_trials=N_TRIALS)
+    study.optimize(lambda trial: objective(trial, tokenizer, DEVICE, MODEL_NAME), n_trials=N_TRIALS)
     
     study = optuna.load_study(study_name=STUDY_NAME, 
                                 storage="sqlite:///bert.db")
