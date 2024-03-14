@@ -21,13 +21,13 @@ Special thanks to Vineeth Venugopal, Elsa Olivetti, Kevin J. Huang, Ryan Stephen
 
 ---
 
-### **Reproduce the Paper's Results**
+### **Reproduce the Results**
 #### 🤖 **Train the Sentence Classifier** 
 
 1. **Create a new environment & activate** named `nlp4sib` using Python 3.8:
    ```bash
-   conda create -n nlp4sib python==3.8
-   conda activate nlp4sib
+   conda create -n nlp4sib-sentence python==3.8
+   conda activate nlp4sib-sentence
    ```
 2. **Install the necessary dependencies** from the `requirements.txt` file:
    ```bash
@@ -38,20 +38,46 @@ Special thanks to Vineeth Venugopal, Elsa Olivetti, Kevin J. Huang, Ryan Stephen
    python classifiers/sentence_classifier/train_bert.py 
    ```
 
-#### 🔍 Run Entity & Relation Extraction with DYGIE++
+## 🔍 Running Entity & Relation Extraction with DYGIE++
 
-1. **Initialize DyGIE++**:
-   ```bash
-    git submodule init
-    git submodule update
-   ```
-2. **Train DyGIE++** using the labeled sentences:
+### Step 1: Initialize DyGIE++
+First, initialize the DyGIE++ submodule with the following commands:
+```bash
+git submodule init
+git submodule update
+```
+
+### Step 2: Environment Setup
+Create and activate a new Conda environment for the project:
+```bash
+conda create -n nlp_4sib-phrase python==3.8
+conda activate nlp_4sib-phrase
+```
+Navigate to the DyGIE++ directory and install the required dependencies:
+```bash
+cd classifiers/phrase_classifier/dygiepp
+pip install -r requirements.txt
+pip install transformers==4.2.1 # being able to use recent models
+pip install numpy==1.19.0 # version conflict
+conda develop .
+cd ../..
+```
+
+### Step 3: Training DyGIE++
+Train the DyGIE++ model using the labeled sentences. Two training configurations are provided below:
+
+- **Improvement Configuration:**
     ```bash
-    allennlp train "phrase_classifier/best_parameter_study_improvement.json" \
-        --serialization-dir "phrase_classifier/dygiepp/models/improvement" \
+    allennlp train "classifiers/phrase_classifier/best_parameter_study_improvement.json" \
+        --serialization-dir "classifiers/phrase_classifier/dygiepp/models/improvement" \
         --include-package dygie
-    
-    allennlp train "phrase_classifier/best_parameter_study_challenge.json" \
-        --serialization-dir "phrase_classifier/dygiepp/models/challenge" \
-        --include-package dygie 
+    ```
+
+- **Challenge Configuration:**
+    ```bash
+    allennlp train "classifiers/phrase_classifier/best_parameter_study_challenge.json" \
+        --serialization-dir "classifiers/phrase_classifier/dygiepp/models/challenge" \
+        --include-package dygie
+    ```
+
 

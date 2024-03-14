@@ -1,9 +1,9 @@
-torch==2.2.0
-pandas
+torch==2.2.1
 optuna==3.5.0
-transformers==4.21.3
+transformers==4.21.0
 datasets==2.4.0
-seaborn==0.13.2
+seaborn
 evaluate==0.4.1
-numpy
 scikit-learn
+numpy==1.21
+pandas==1.0.0

@@ -89,8 +89,8 @@
     "numpy_seed": 1337,
     "pytorch_seed": 133,
     "random_seed": 13370,
-    "test_data_path": "phrase_classifier/data/improvement_ner/test.json",
-    "train_data_path": "phrase_classifier/data/improvement_ner/train.json",
+    "test_data_path": "classifiers/phrase_classifier/datasets/mitigation_ner/test.json",
+    "train_data_path": "classifiers/phrase_classifier/datasets/mitigation_ner/train.json",
     "trainer": {
         "checkpointer": {
             "num_serialized_models_to_keep": 3
@@ -120,5 +120,5 @@
         },
         "validation_metric": "+MEAN__relation_f1"
     },
-    "validation_data_path": "phrase_classifier/data/improvement_ner/dev.json"
+    "validation_data_path": "classifiers/phrase_classifier/datasets/mitigation_ner/dev.json"
 }
