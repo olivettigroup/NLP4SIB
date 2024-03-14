@@ -24,19 +24,23 @@ Special thanks to Vineeth Venugopal, Elsa Olivetti, Kevin J. Huang, Ryan Stephen
 ### **Reproduce the Results**
 #### 🤖 **Train the Sentence Classifier** 
 
-1. **Create a new environment & activate** named `nlp4sib` using Python 3.8:
-   ```bash
-   conda create -n nlp4sib-sentence python==3.8
-   conda activate nlp4sib-sentence
-   ```
-2. **Install the necessary dependencies** from the `requirements.txt` file:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. **Train the Sentence Classifier**:
-   ```bash
-   python classifiers/sentence_classifier/train_bert.py 
-   ```
+### Step 1: Create a new Env
+Create a new environment & activate** named `nlp4sib` using Python 3.8:
+```bash
+conda create -n nlp4sib-sentence python==3.8
+conda activate nlp4sib-sentence
+```
+
+### Step 2: Environment Setup
+Install the necessary dependencies** from the `requirements.txt` file:
+```bash
+pip install -r requirements.txt
+```
+### Step 3: Start Training
+Train the Sentence Classifier**:
+```bash
+python classifiers/sentence_classifier/train_bert.py 
+```
 
 ## 🔍 Running Entity & Relation Extraction with DYGIE++
 
