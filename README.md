@@ -21,8 +21,7 @@ Special thanks to Vineeth Venugopal, Elsa Olivetti, Kevin J. Huang, Ryan Stephen
 
 ---
 
-## Reproduce the Results
-#### 🤖 **Train the Sentence Classifier** 
+## 🤖 Train the Sentence Classifier
 
 ### Step 1: Create a new Env
 Create a new environment & activate** named `nlp4sib` using Python 3.8:
