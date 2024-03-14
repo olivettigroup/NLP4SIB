@@ -21,7 +21,7 @@ Special thanks to Vineeth Venugopal, Elsa Olivetti, Kevin J. Huang, Ryan Stephen
 
 ---
 
-### **Reproduce the Results**
+## Reproduce the Results
 #### 🤖 **Train the Sentence Classifier** 
 
 ### Step 1: Create a new Env
