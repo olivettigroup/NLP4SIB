@@ -63,7 +63,7 @@ pip install -r requirements.txt
 pip install transformers==4.2.1 # being able to use recent models
 pip install numpy==1.19.0 # version conflict
 conda develop .
-cd ../..
+cd ../../..
 ```
 
 ### Step 3: Training DyGIE++
